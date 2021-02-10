@@ -1,0 +1,1 @@
+# Implement Foldiak’s (1991) learning rule and demonstrate how it learns a representation that is invariant to translation. Compare to the standard Hebbian learning rule.
