@@ -14,27 +14,28 @@ buff = []
 def generate_sweep(direction):
 	# generate 16 frames for a diagonal direction
 
-	if direction =="bs":
+	if direction == 0:
 		orientation_val = 1
 		sweep_length = 16
 		def loc_func(i,j,k):
 			return (j+k) == (i)
-	elif direction == "fs":
+	elif direction == 1:
 		orientation_val = 2
 		sweep_length = 16
 		def loc_func(i,j,k):
 			return ((8-j)+k) == i
-	elif direction == "vt":
+	elif direction == 2:
 		orientation_val = 3
 		sweep_length = 8
 		def loc_func(i,j,k):
 			return j == i
-	elif direction == "hz":
+	elif direction == 3:
 		orientation_val = 4
 		sweep_length = 8
 		def loc_func(i,j,k):
 			return k==i
 
+	# add either 8 or 16 frames to the buffer
 	for i in range(sweep_length):
 			frame = []
 			for j in range(8):
@@ -79,10 +80,13 @@ class Foldiak_model():
 		# TODO
 		self.simple_weights = []
 		self.complex_weights = []
+
+	def fit(self, alpha, delta, iter):
+		print("model fit!")
 	
-	def test(self, frame):
+	def predict(self, frame):
 		# TODO
-		return "hz"
+		return 3
 
 # Test the model
 def test_foldiak():
@@ -91,16 +95,35 @@ def test_foldiak():
 
 	# create a foldiak model:
 	model = Foldiak_model()
+
+	#### TRAINING ####
+	alpha = 0.02
+	delta = 0.2
+	# This should take a learning rate, a number of iterations on which to train
+	model.fit(alpha, delta, iterations)
+
+
+	# For reference
+	# orientation_dictionary = {0: "bs", 1: "fs", 2: "vt", 3: "hz"}
+	
+	#### TESTING #####
 	# Loop through each of the four orientations
-	for orientation in ["bs","fs","vt","hz"]:
-		# for each orientation generate a sweep and test each frame
+	for orientation in [0,1,2,3]:
+		# for each orientation generate a sweep and predict each frame
 		for test_case in range(generate_sweep(orientation)):
 			frame = (buff.pop() if buff else empty)
 			# Run the frame through the model and check if the prediction is correct
-			accuracy = (model.test(frame) == orientation)
+			accuracy = (model.predict(frame) == orientation)
 
 			# draw the frame coloring for the prediction accuracy
 			visualise_frame(frame, accuracy)
 			sleep(0.25)
 	
 test_foldiak()	
+
+'''
+	TODO:
+	Add second direction for sweeps, change to a 32 by 8 frame (for each orientation)
+	make sweep length uniform for all directions
+'''
+
